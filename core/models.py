@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+
 class Hospital(models.Model):
     name = models.CharField(max_length=255)
 
@@ -26,12 +27,20 @@ class Hospital(models.Model):
 class Doctor(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name="doctor")
 
-    hospital = models.ManyToManyField(Hospital, related_name="doctors", verbose_name="Места работы")
+    hospital = models.ManyToManyField(
+        to=Hospital, related_name="doctors",
+        verbose_name="Места работы", null=True, blank=True)
 
     def __str__(self):
-        return self.user
+        return self.user.username
 
 
 class Patient(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE, related_name='patient')
-    hospital = models.ManyToManyField(Hospital, related_name='patients', verbose_name="Ваши поликлиники")
+
+    hospital = models.ManyToManyField(
+        to=Hospital, related_name='patients',
+        verbose_name="Ваши поликлиники", null=True, blank=True)
+
+    def __str__(self):
+        return self.user.username
